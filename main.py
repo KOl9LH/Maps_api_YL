@@ -18,6 +18,7 @@ class Example(QWidget):
         self.ogr2 = self.k1 + 0.2
         self.ogr3 = self.k2 + 0.2
         self.ogr4 = self.k2 - 0.2
+        self.theme = "light"
         self.getImage()
         self.initUI()
 
@@ -26,8 +27,12 @@ class Example(QWidget):
         api_key = '7099749a-10db-45e9-82e2-dcdebe051633'
         ll_spn = f'll={self.k1},{self.k2}&spn={self.spn},{self.spn}'
 
+        params = {
+            "theme": self.theme
+        }
+
         map_request = f"{server_address}{ll_spn}&apikey={api_key}"
-        response = requests.get(map_request)
+        response = requests.get(map_request, params=params)
 
         if not response:
             print("Ошибка выполнения запроса:")
@@ -44,28 +49,32 @@ class Example(QWidget):
         self.setWindowTitle('Отображение карты')
 
         self.up = QPushButton('PgUp', self)
-        self.up.move(10, 100)
+        self.up.move(10, 80)
         self.up.clicked.connect(self.up_f)
 
         self.down = QPushButton('PgDown', self)
-        self.down.move(10, 140)
+        self.down.move(10, 120)
         self.down.clicked.connect(self.down_f)
 
         self.up1 = QPushButton('вверх', self)
-        self.up1.move(10, 180)
+        self.up1.move(10, 160)
         self.up1.clicked.connect(self.up_f2)
 
         self.down1 = QPushButton('вниз', self)
-        self.down1.move(10, 220)
+        self.down1.move(10, 200)
         self.down1.clicked.connect(self.down_f2)
 
         self.left = QPushButton('вправо', self)
-        self.left.move(10, 260)
+        self.left.move(10, 240)
         self.left.clicked.connect(self.right_f)
 
         self.right = QPushButton('влево', self)
-        self.right.move(10, 300)
+        self.right.move(10, 280)
         self.right.clicked.connect(self.left_f)
+
+        self.dark = QPushButton(f'тёмная/\nсветлая', self)
+        self.dark.move(10, 320)
+        self.dark.clicked.connect(self.dark_f)
 
         self.pixmap = QPixmap(self.map_file)
         self.image = QLabel(self)
@@ -110,6 +119,13 @@ class Example(QWidget):
         if self.k1 < self.ogr2:
             self.k1 += self.spn / 2
             self.update_map()
+
+    def dark_f(self):
+        if self.theme == "light":
+            self.theme = "dark"
+        else:
+            self.theme = "light"
+        self.update_map()
 
 
 if __name__ == '__main__':
